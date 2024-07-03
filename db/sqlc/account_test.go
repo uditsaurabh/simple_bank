@@ -5,15 +5,16 @@ import (
 	"fmt"
 	"testing"
 
+	_ "github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 	utils "github.com/uditsaurabh/simple_bank/util"
 )
 
-func CreateRandomAccountForTest() (Account, CreateAccountParams, error) {
+func CreateRandomAccountForTest(user User) (Account, CreateAccountParams, error) {
 	args := CreateAccountParams{
 		Balance:  utils.RandomMoney(),
 		Currency: "USD",
-		Owner:    utils.RandomOwner(),
+		Owner:    user.Username,
 	}
 	account, err := testQueries.CreateAccount(context.Background(), args)
 	if err != nil {
@@ -23,14 +24,18 @@ func CreateRandomAccountForTest() (Account, CreateAccountParams, error) {
 }
 
 func TestCreateAccount(t *testing.T) {
-	account, args, err := CreateRandomAccountForTest()
+	user, _, err := CreateRandomUserForTest()
+	require.NoError(t, err)
+	account, args, err := CreateRandomAccountForTest(user)
 	require.NoError(t, err)
 	require.NotEmpty(t, account)
 	require.Equal(t, account.Balance, args.Balance)
 }
 
 func TestGetAccount(t *testing.T) {
-	account, _, err := CreateRandomAccountForTest()
+	user, _, err := CreateRandomUserForTest()
+	require.NoError(t, err)
+	account, _, err := CreateRandomAccountForTest(user)
 	require.NoError(t, err)
 	retrieved_acc, err := testQueries.GetAccount(context.Background(), account.ID)
 	require.NoError(t, err)
@@ -39,7 +44,9 @@ func TestGetAccount(t *testing.T) {
 }
 
 func TestUpdateAccount(t *testing.T) {
-	account, _, err := CreateRandomAccountForTest()
+	user, _, err := CreateRandomUserForTest()
+	require.NoError(t, err)
+	account, _, err := CreateRandomAccountForTest(user)
 	require.NoError(t, err)
 
 	updateAccountArgs := UpdateAccountParams{

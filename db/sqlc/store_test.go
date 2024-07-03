@@ -12,11 +12,14 @@ import (
 func TestTransferTx(t *testing.T) {
 	var err error
 	store := NewStore(testdb)
-
-	account, _, err := CreateRandomAccountForTest()
+	user, _, err := CreateRandomUserForTest()
+	require.NoError(t, err)
+	account, _, err := CreateRandomAccountForTest(user)
 	require.NoError(t, err)
 
-	account1, _, err := CreateRandomAccountForTest()
+	user1, _, err := CreateRandomUserForTest()
+	require.NoError(t, err)
+	account1, _, err := CreateRandomAccountForTest(user1)
 	require.NoError(t, err)
 
 	transfer_arg := CreateTransferParams{
