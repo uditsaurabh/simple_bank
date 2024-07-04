@@ -38,7 +38,9 @@ func (server *Server) SetUpRoutes() {
 	router.POST("/user", server.CreateUser)
 	router.POST("/login", server.LoginWithPassword)
 
+	//custom middleware
 	//authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
+
 	router.POST("/account", server.createAccount)
 	router.GET("/account/:id", server.getAccount)
 	router.GET("/account", server.listAccount)
